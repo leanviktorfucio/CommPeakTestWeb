@@ -8,7 +8,6 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
 
 class CSVFileType extends AbstractType
 {
@@ -20,7 +19,7 @@ class CSVFileType extends AbstractType
                     'mapped' => true,
                     'required' => true,
                     'attr' => ['class' => 'form-control', 'accept' => '.csv'],
-                    'label_format' => 'Upload CSV file',
+                    'label_format' => 'Upload CSV files',
                     'label_attr' => ['class' => 'form-label']
                 ])
             ->add('Upload', SubmitType::class, ['attr' => ['class' => 'mt-3 btn btn-primary']])

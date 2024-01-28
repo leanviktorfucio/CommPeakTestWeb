@@ -14,11 +14,13 @@
         {{ form_row(form.files) }}
         {{ form_end(form) }}
 
-        <div id="logContainer"></div>
+        <div id="logContainer" style="height: 100px;">
+            
+        </div>
     </div>
 
     <h3 class="text-center">Statistics</h3>
-    <table class="table table-striped">
+    <table id="statistics-table" class="table table-striped">
         <thead>
             <tr>
                 <th scope="col">Customer ID</th>
@@ -29,20 +31,15 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>5</td>
-                <td>120 seconds</td>
-                <td>10</td>
-                <td>169 seconds</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>6</td>
-                <td>332 seconds</td>
-                <td>312</td>
-                <td>4124 seconds</td>
-            </tr>
+            {% for callDataStat in callDataStatistics %}
+                <tr>
+                    <th scope="row">{{ callDataStat.customerId }}</th>
+                    <td>{{ callDataStat.numberOfCallsWithinSameContinent }}</td>
+                    <td>{{ callDataStat.durationOfCallsWithinSameContinent }}</td>
+                    <td>{{ callDataStat.totalNumberOfCalls }}</td>
+                    <td>{{ callDataStat.totalDurationOfCalls }}</td> 
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>

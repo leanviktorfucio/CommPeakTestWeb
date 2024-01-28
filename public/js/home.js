@@ -6,8 +6,6 @@ $(document).ready(() => {
         const form = $(e.currentTarget);
 
         const action = form.attr('action');
-        const method = form.attr('method');
-
 
         // create FormData
         const formData = new FormData();
@@ -23,13 +21,12 @@ $(document).ready(() => {
 
         $.post({
             url: action,
-            type: method,
             data: formData,
             cache: false,
             contentType: false,
             processData: false,
             success: (response) => {
-                $("#logContainer").html('<div class="alert alert-primary" role="alert">Success!</div>');
+                $("#logContainer").html('<div class="alert alert-primary" role="alert">' + response + '</div>');
             },
             error: (response) => {
                 const errors = JSON.parse(response.responseText);
@@ -46,7 +43,43 @@ $(document).ready(() => {
             complete: (response) => {
                 $('.form-container').css('opacity', '');
                 $('.form-container :input').attr('disabled', false);
-            },
+            }
         });
     });
+
+    // start get statistics data polling
+    getStatisticsData();
 });
+
+function getStatisticsData() {
+    $.get({
+        url: '/statistics',
+        success: (response) => {
+            const templateTR = '' +
+            '<tr>' +
+            '    <th scope="row">__customerId__</th>' +
+            '    <td>__numberOfCallsWithinSameContinent__</td>' +
+            '    <td>__durationOfCallsWithinSameContinent__</td>' +
+            '    <td>__totalNumberOfCalls__</td>' +
+            '    <td>__totalDurationOfCalls__</td>' +
+            '</tr>'
+            ;
+            let tableTbodyContent = '';
+            for (const callDataStat of response) {
+                tableTbodyContent += templateTR
+                                        .replace('__customerId__', callDataStat.customerId)
+                                        .replace('__numberOfCallsWithinSameContinent__', callDataStat.numberOfCallsWithinSameContinent)
+                                        .replace('__durationOfCallsWithinSameContinent__', callDataStat.durationOfCallsWithinSameContinent)
+                                        .replace('__totalNumberOfCalls__', callDataStat.totalNumberOfCalls)
+                                        .replace('__totalDurationOfCalls__', callDataStat.totalDurationOfCalls);
+              }
+
+            $("#statistics-table tbody")
+                .empty()
+                .html(tableTbodyContent);
+        },
+        complete: (response) => {
+            setTimeout(getStatisticsData, 500);
+        }
+    });
+}
