@@ -29,7 +29,8 @@ $(document).ready(() => {
             contentType: false,
             processData: false,
             success: (response) => {
-                $("#logContainer").html('<div class="alert alert-primary" role="alert">Success!</div>');
+                // $("#logContainer").html('<div class="alert alert-primary" role="alert">Success!</div>');
+                $("#logContainer").html(response);
             },
             error: (response) => {
                 const errors = JSON.parse(response.responseText);
@@ -46,7 +47,7 @@ $(document).ready(() => {
             complete: (response) => {
                 $('.form-container').css('opacity', '');
                 $('.form-container :input').attr('disabled', false);
-            },
+            }
         });
     });
 });
