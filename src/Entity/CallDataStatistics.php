@@ -9,10 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 class CallDataStatistics
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private int $id;
-
     #[ORM\Column(name: "customer_id", type: 'integer', nullable: false, unique: true)]
     private int $customerId;
     
@@ -27,10 +23,6 @@ class CallDataStatistics
     
     #[ORM\Column(name: "total_duration_of_calls", type: 'integer', nullable: false)]
     private $totalDurationOfCalls;
-
-    public function getId(): int {
-        return $this->id;
-    }
 
     public function getCustomerId(): int {
         return $this->customerId;
@@ -94,5 +86,15 @@ class CallDataStatistics
         ];
 
         return implode(separator: ',', array: $csvData);
+    }
+
+    public function toArray() {
+        return [
+            'customerId' => $this->customerId,
+            'numberOfCallsWithinSameContinent' => $this->numberOfCallsWithinSameContinent,
+            'durationOfCallsWithinSameContinent' => $this->durationOfCallsWithinSameContinent,
+            'totalNumberOfCalls' => $this->totalNumberOfCalls,
+            'totalDurationOfCalls' => $this->totalDurationOfCalls
+        ];
     }
 }

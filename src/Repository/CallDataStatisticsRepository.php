@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\CallDataStatistics;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,7 +19,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CallDataStatisticsRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        private EntityManager $entityManager
+    )
     {
         parent::__construct($registry, CallDataStatistics::class);
     }
@@ -45,6 +49,21 @@ class CallDataStatisticsRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function importCSV(string $csvFilePath): void  {
+        $connection = $this->entityManager->getConnection();
+
+        $query = sprintf(
+            'LOAD DATA LOCAL INFILE %s
+            REPLACE INTO TABLE %s 
+            FIELDS TERMINATED BY \',\' ENCLOSED BY \'"\' LINES TERMINATED BY \'\\n\'
+            (customer_id, number_of_calls_within_same_continent, duration_of_calls_within_same_continent, total_number_of_calls, total_duration_of_calls)',
+            $connection->quote($csvFilePath),
+            $this->entityManager->getClassMetadata(CallDataStatistics::class)->getTableName()
+        );
+
+        $connection->executeStatement($query);
     }
 
     // /**

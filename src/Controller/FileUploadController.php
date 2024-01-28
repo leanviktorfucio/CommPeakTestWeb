@@ -7,7 +7,6 @@ use App\Form\CSVFileType;
 use App\Service\CallDataService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,9 +16,7 @@ class FileUploadController extends AbstractController {
 
     public function __construct(
         private CallDataService $callDataService
-    ) {
-        
-    }
+    ) {}
 
     #[Route('/upload', name: 'upload_csv',  methods: ['POST'])]
     public function uploadFile(Request $request): Response {
@@ -34,10 +31,6 @@ class FileUploadController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             $csvFiles = $form->get('files')->getData();
-            // foreach($csvFiles as $csvFile) {
-            //     /** @var UploadedFile $csvFile */
-            //     $this->callDataService->load(filePath: $csvFile->getPathname());
-            // }
 
             $this->callDataService->load(csvFiles: $csvFiles);
 

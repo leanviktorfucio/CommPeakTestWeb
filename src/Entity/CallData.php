@@ -27,10 +27,10 @@ class CallData
     private int $duration;
 
     #[ORM\Column(name: "phone_number", type: 'string', length: 20, nullable: false)]
-    private int $phoneNumber;
+    private string $phoneNumber;
 
     #[ORM\Column(name: "ip", type: 'string', length: 20,  nullable: false)]
-    private int $ip;
+    private string $ip;
 
     public function getId(): int {
         return $this->id;

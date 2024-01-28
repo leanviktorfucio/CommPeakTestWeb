@@ -4,10 +4,10 @@ namespace App\Repository;
 
 use App\Entity\CallData;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @extends ServiceEntityRepository<CallData>
@@ -19,7 +19,10 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class CallDataRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        ManagerRegistry $registry,
+        private EntityManager $entityManager
+    )
     {
         parent::__construct($registry, CallData::class);
     }
@@ -48,38 +51,17 @@ class CallDataRepository extends ServiceEntityRepository
         }
     }
 
-    public function importCSV(File $csvFile): void  {
-        $path = $csvFile->getPathname();
-
-        // Get the EntityManager connection
-        $connection = $this->getEntityManager()->getConnection();
-
-        // // Create a query
-        // $query = $entityManager->createQuery('
-        //     LOAD DATA LOCAL INFILE :path INTO TABLE :table
-        //     FIELDS TERMINATED BY ','
-        //     ENCLOSED BY \'"\'
-        //     LINES TERMINATED BY \'\r\n\'
-        //     IGNORE 1 LINES
-        //     (col1, col2, col3, col4, col5...);
-        // ');
-
-        // // Set parameters if needed
-        // $query->setParameter('path', $path);
-        // $query->setParameter('table', $this->getEntityName());
-
-        // echo $query->getSQL();
+    public function importCSV(string $csvFilePath): void  {
+        $connection = $this->entityManager->getConnection();
 
         $query = sprintf(
             'LOAD DATA LOCAL INFILE %s
-            INTO TABLE %s 
+            REPLACE INTO TABLE %s 
             FIELDS TERMINATED BY \',\' ENCLOSED BY \'"\' LINES TERMINATED BY \'\\n\'
             (customer_id, datetime, duration, phone_number, ip)',
-            $connection->quote($path),
-            'CallData'
+            $connection->quote($csvFilePath),
+            $this->entityManager->getClassMetadata(CallData::class)->getTableName()
         );
-
-        echo $query;
 
         $connection->executeStatement($query);
     }

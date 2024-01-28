@@ -20,3 +20,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Repository\:
+        resource: '../src/Repository/'
+        arguments: ['@doctrine', '@doctrine.orm.default_entity_manager']

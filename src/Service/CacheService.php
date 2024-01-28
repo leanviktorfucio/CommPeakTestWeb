@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\HttpFoundation\File\File;
 
 class CacheService  {
     public function set(string $key, $value, $ttlInSeconds = null): void {
