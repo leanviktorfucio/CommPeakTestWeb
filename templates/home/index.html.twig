@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CommPeak Test Application{% endblock %}
+
+{% block body %}
+<style>
+    
+</style>
+
+<div class="container">
+    <div class="form-container">
+        {{ form_start(form, {'attr': {'id' : 'uploadCSVForm', 'class': 'my-5 p-3 border border-secondary-subtle rounded-2 bg-light'}}) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.files) }}
+        {{ form_end(form) }}
+
+        <div id="logContainer" style="height: 100px;">
+            
+        </div>
+    </div>
+
+    <h3 class="text-center">Statistics</h3>
+    <table id="statistics-table" class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Customer ID</th>
+                <th scope="col">Number of calls within same continent</th>
+                <th scope="col">Total Duration of calls within same continent</th>
+                <th scope="col">Total number of all calls</th>
+                <th scope="col">Total duration of all calls</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for callDataStat in callDataStatistics %}
+                <tr>
+                    <th scope="row">{{ callDataStat.customerId }}</th>
+                    <td>{{ callDataStat.numberOfCallsWithinSameContinent }}</td>
+                    <td>{{ callDataStat.durationOfCallsWithinSameContinent }}</td>
+                    <td>{{ callDataStat.totalNumberOfCalls }}</td>
+                    <td>{{ callDataStat.totalDurationOfCalls }}</td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{{ asset('js/home.js') }}" ></script>
+{% endblock %}
